@@ -7,6 +7,7 @@ object Settings {
 
   val ScalaCompileOpts = Seq(
     "-deprecation", // Emit warning and location for usages of deprecated APIs.
+    "-feature",
     "-encoding",
     "utf-8",         // Specify character encoding used by source files.
     "-explaintypes", // Explain type errors in more detail.
@@ -14,6 +15,7 @@ object Settings {
     "-language:experimental.macros", // Allow macro definition (besides implementation and application)
     "-language:higherKinds", // Allow higher-kinded types
     "-language:implicitConversions", // Allow definition of implicit functions called views
+    "-language:postfixOps",
     "-unchecked", // Enable additional warnings where generated code depends on assumptions.
     "-Xfatal-warnings", // Fail the compilation if there are any warnings.
     "-Xfuture", // Turn on future language features.
