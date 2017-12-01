@@ -1,0 +1,11 @@
+*.iml
+.idea
+target/
+*.tmp
+*.sc
+*.swap
+.DS_Store
+boot/
+lib_managed/
+src_managed/
+project/plugins/project/
