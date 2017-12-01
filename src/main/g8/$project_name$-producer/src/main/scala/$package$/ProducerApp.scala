@@ -1,4 +1,4 @@
-package net.scalytica.tweetstream
+package $package$
 
 import java.util.Properties
 
@@ -7,9 +7,8 @@ import akka.actor.ActorSystem
 import akka.kafka.ProducerSettings
 import akka.kafka.scaladsl.Producer
 import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.Source
 import com.typesafe.config.ConfigFactory
-import net.scalytica.tweetstream.ProducerConfig.fromConfig
+import $package$.ProducerConfig.fromConfig
 import org.apache.kafka.clients.admin.{AdminClient, AdminClientConfig, NewTopic}
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.config.TopicConfig.{
@@ -40,8 +39,6 @@ object ProducerApp extends App {
       keySerializer = new LongSerializer,
       valueSerializer = new ByteArraySerializer
     ).withBootstrapServers(config.kafkaUrl)
-
-  private val bufSize: Int = 1000
 
   def createKafkaAdmin(kafkaUrl: String): AdminClient = {
     val p = new Properties()

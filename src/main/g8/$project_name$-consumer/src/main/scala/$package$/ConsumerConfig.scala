@@ -1,4 +1,4 @@
-package net.scalytica.tweetstream
+package $package$
 
 import com.typesafe.config.Config
 

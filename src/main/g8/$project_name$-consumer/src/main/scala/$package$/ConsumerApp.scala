@@ -1,4 +1,4 @@
-package net.scalytica.tweetstream
+package $package$
 
 import akka.Done
 import akka.actor.ActorSystem
@@ -7,12 +7,12 @@ import akka.kafka.{ConsumerSettings, Subscriptions}
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
 import com.typesafe.config.ConfigFactory
-import net.scalytica.tweetstream.ConsumerConfig._
+import $package$.ConsumerConfig._
+import $package$.schemas.sample.SampleEvent
 import org.apache.kafka.common.serialization.{
   LongDeserializer,
-  ByteArray
+  ByteArrayDeserializer
 }
-import net.scalytica.tweetstream.schemas.sample.SampleEvent
 import org.slf4j.LoggerFactory
 
 import scala.concurrent.Await

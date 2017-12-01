@@ -1,9 +1,11 @@
-package net.scalytica.tweetstream
+package $package$
 
 import akka.stream.ThrottleMode.Shaping
 import akka.stream.scaladsl._
 
-import net.scalytica.tweetstream.schemas.sample.SampleEvent
+import org.joda.time.DateTime.now
+
+import $package$.schemas.sample.SampleEvent
 
 import scala.concurrent.duration._
 
@@ -11,8 +13,8 @@ object SampleEventSource {
 
   val throttled =
     Source
-      .fromIterator(() => (1 to Long.MaxValue).iterator)
-      .map(i => SampleEvent(i, s"Sample event \$i"))
+      .fromIterator(() => (1 to Int.MaxValue).iterator)
+      .map(i => SampleEvent(i.toLong, now.getMillis, s"Sample event \$i"))
       .throttle(
         elements = 10,
         per = 1 second,
