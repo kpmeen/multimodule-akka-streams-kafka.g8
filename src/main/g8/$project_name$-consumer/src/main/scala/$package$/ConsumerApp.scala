@@ -42,7 +42,7 @@ object ConsumerApp extends App {
         subscription = Subscriptions.topics(config.kafkaTopic)
       )
       .map(cm => SampleEvent.parseFrom(cm.value()))
-      .runWith(Sink.foreach(se => logger.debug(s"record processed => $se")))
+      .runWith(Sink.foreach(se => logger.debug(s"record processed => \$se")))
 
     Await.result(done, Duration.Inf) match {
       case Done => logger.info("Consumer done")

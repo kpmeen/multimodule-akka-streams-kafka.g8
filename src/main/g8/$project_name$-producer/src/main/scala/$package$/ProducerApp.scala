@@ -74,7 +74,7 @@ object ProducerApp extends App {
 
     val done =
       src.map { t =>
-        logger.debug(s"Received $t")
+        logger.debug(s"Received \$t")
         new ProducerRecord(config.kafkaTopic, Long.box(t.id), t.toByteArray)
       }.runWith(Producer.plainSink(producerSettings))
 
@@ -83,7 +83,7 @@ object ProducerApp extends App {
     }
   } finally {
     Await.result(actorSystem.terminate(), Duration.Inf) match {
-      case _ => logger.info(s"Producer actor system terminated.")
+      case _ => logger.info("Producer actor system terminated.")
     }
   }
 }

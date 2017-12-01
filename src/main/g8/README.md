@@ -18,19 +18,20 @@
 ## Running locally
 
 ```
-$ ./target/universal/stage/bin/tweetstream \
-    -Dinput-topic=blah -Doutput-topic=bleh ...
+./target/universal/stage/bin/tweetstream \
+  -Dinput-topic=blah -Doutput-topic=bleh ...
 ```
 
 ## Running in Docker
 
 ```
-$ export JAVA_OPTS=" \
+export JAVA_OPTS=" \
 -Dinput-topic=blah \
 -Doutput-topic=blah \
 ...
 "
-$ docker run -e JAVA_OPTS -i tweetstream
+
+docker run -e JAVA_OPTS -i tweetstream
 ```
 
 ## Further detail

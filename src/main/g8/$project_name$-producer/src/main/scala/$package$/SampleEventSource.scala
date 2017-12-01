@@ -12,7 +12,7 @@ object SampleEventSource {
   val throttled =
     Source
       .fromIterator(() => (1 to Long.MaxValue).iterator)
-      .map(i => SampleEvent(i, s"Sample event $i"))
+      .map(i => SampleEvent(i, s"Sample event \$i"))
       .throttle(
         elements = 10,
         per = 1 second,
