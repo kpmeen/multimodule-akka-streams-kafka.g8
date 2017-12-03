@@ -24,10 +24,7 @@ lazy val schema = BaseProject("$project_name$-pb-schema")
     )
   )
 
-lazy val producer = BaseProject("$project_name$-producer")
-  .enablePlugins(JavaAppPackaging, DockerPlugin)
-  .settings(CommonSettings: _*)
-  .settings(DockerSettings: _*)
+lazy val producer = DockerProject("$project_name$-producer")
   .settings(
     libraryDependencies ++= Seq(
       AkkaStreamKafka,
@@ -47,10 +44,7 @@ lazy val producer = BaseProject("$project_name$-producer")
   )
   .dependsOn(schema)
 
-lazy val consumer = BaseProject("$project_name$-consumer")
-  .enablePlugins(JavaAppPackaging, DockerPlugin)
-  .settings(CommonSettings: _*)
-  .settings(DockerSettings: _*)
+lazy val consumer = DockerProject("$project_name$-consumer")
   .settings(
     libraryDependencies ++= Seq(
       AkkaStreamKafka,

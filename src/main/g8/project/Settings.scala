@@ -1,21 +1,24 @@
+import com.typesafe.sbt.SbtNativePackager
 import com.typesafe.sbt.SbtNativePackager.autoImport._
+import com.typesafe.sbt.packager.archetypes.JavaAppPackaging
+import com.typesafe.sbt.packager.docker.{DockerAlias, DockerPlugin}
 import com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._
 import sbt.Keys._
 import sbt._
 
 object Settings {
 
+  // scalastyle:off
+
   val ScalaCompileOpts = Seq(
     "-deprecation", // Emit warning and location for usages of deprecated APIs.
-    "-feature",
     "-encoding",
-    "utf-8",         // Specify character encoding used by source files.
+    "utf-8", // Specify character encoding used by source files.
     "-explaintypes", // Explain type errors in more detail.
     "-language:existentials", // Existential types (besides wildcard types) can be written and inferred
     "-language:experimental.macros", // Allow macro definition (besides implementation and application)
     "-language:higherKinds", // Allow higher-kinded types
     "-language:implicitConversions", // Allow definition of implicit functions called views
-    "-language:postfixOps",
     "-unchecked", // Enable additional warnings where generated code depends on assumptions.
     "-Xfatal-warnings", // Fail the compilation if there are any warnings.
     "-Xfuture", // Turn on future language features.
@@ -51,7 +54,7 @@ object Settings {
     "-Ywarn-unused:params", // Warn if a value parameter is unused.
     "-Ywarn-unused:patvars", // Warn if a variable bound in a pattern is unused.
     "-Ywarn-unused:privates", // Warn if a private member is unused.
-    "-Ywarn-value-discard", // Warn when non-Unit expression results are unused.
+    "-Ywarn-value-discard" // Warn when non-Unit expression results are unused.
   )
 
   val CommonSettings = Seq(
@@ -67,19 +70,37 @@ object Settings {
     sources in (Compile, doc) := Seq.empty
   )
 
-  val DockerSettings = Seq(
-    version in Docker := "latest",
-    packageName in Docker := "$project_name$/" + packageName.value,
-    dockerBaseImage := "openjdk:8"
-    //  dockerRepository := Some("gitlab.com")
-  )
+  // Set to e.g. Some("registry.gitlab.com") for gitlab docker registry
+  val DockerRegistryHost: Option[String] = None
+  // targetets repo for docker username or organization
+  val DockerUser     = "kpmeen"
+
+  val DockerSettings: String => Seq[Def.Setting[_]] = (moduleName: String) =>
+    Seq(
+      maintainer in Docker := maintainer.value,
+      version in Docker := "latest",
+      dockerBaseImage := "openjdk:8",
+      dockerRepository := Some(s"${DockerRegistryHost.map(h => s"$h/").getOrElse("")}$DockerUser"),
+      dockerAlias := DockerAlias(
+        DockerRegistryHost,
+        Some(DockerUser),
+        "$project_name$/" + moduleName,
+        Some("latest")
+      )
+    )
 
   val NoPublish = Seq(
     publish := {},
     publishLocal := {}
   )
 
-  def BaseProject(name: String) =
+  def DockerProject(name: String): Project =
+    BaseProject(name)
+      .settings(DockerSettings(name): _*)
+      .settings(cancelable in Global := true)
+      .enablePlugins(JavaAppPackaging, SbtNativePackager, DockerPlugin)
+
+  def BaseProject(name: String): Project =
     Project(name, file(name)).settings(CommonSettings: _*)
 
 }
