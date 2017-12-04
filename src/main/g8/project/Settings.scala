@@ -76,7 +76,7 @@ object Settings {
   // target repo for docker username or organization
   val DockerUser = "$docker_user$"
   // image alias pushed to registry
-  val DockerAlias = DockerRegistryHost.map(_ => s"$project_name$/\$moduleName").getOrElse(moduleName)
+  val DockerAlias = $if(private_registry.truthy)$s"$project_name$/\$moduleName"$else$moduleName$endif$
 
   val DockerSettings: String => Seq[Def.Setting[_]] = (moduleName: String) =>
     Seq(
