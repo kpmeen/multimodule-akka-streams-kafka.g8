@@ -71,8 +71,8 @@ object Settings {
   )
 
   // Set to e.g. Some("registry.gitlab.com") for gitlab docker registry
-  $if(private_docker_registry.truthy)$
-  val DockerRegistryHost: Option[String] = Some("$docker_registry_host$")
+  $if(use_private_docker_registry)$
+  val DockerRegistryHost: Option[String] = Some("$docker_registry$")
   $else$
   val DockerRegistryHost: Option[String] = None
   $endif$
@@ -84,11 +84,11 @@ object Settings {
       maintainer in Docker := maintainer.value,
       version in Docker := "latest",
       dockerBaseImage := "openjdk:8",
-      dockerRepository := Some(s"${DockerRegistryHost.map(h => s"$h/").getOrElse("")}$DockerUser"),
+      dockerRepository := Some(s"\${DockerRegistryHost.map(h => s"\$h/").getOrElse("")}\$DockerUser"),
       dockerAlias := DockerAlias(
         DockerRegistryHost,
         Some(DockerUser),
-        $if(private_docker_registry.truthy)$
+        $if(use_private_docker_registry)$
         "$project_name$/" + moduleName,
         $else$
         moduleName,

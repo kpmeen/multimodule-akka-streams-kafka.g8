@@ -22,10 +22,10 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
   $project_name$-producer:
-    $if(private_docker_registry.truthy)$
-    image: $docker_user$/$project_name$-producer
+    $if(use_private_docker_registry)$
+    image: $docker_registry$/$docker_user$/$project_name$/$project_name$-producer
     $else$
-    image: $docker_registry_host$/$docker_user$/$project_name$/$project_name$-producer
+    image: $docker_user$/$project_name$-producer
     $endif$
     depends_on:
       - kafka
@@ -41,11 +41,11 @@ services:
       - TWITTER_ACCESS_TOKEN_SECRET
 
   $project_name$-consumer:
-    $if(private_docker_registry.truthy)$
-        image: $docker_user$/$project_name$-consumer
-        $else$
-        image: $docker_registry_host$/$docker_user$/$project_name$/$project_name$-consumer
-        $endif$
+    $if(use_private_docker_registry)$
+    image: $docker_registry$/$docker_user$/$project_name$/$project_name$-consumer
+    $else$
+    image: $docker_user$/$project_name$-consumer
+    $endif$
     depends_on:
       - kafka
     links:
