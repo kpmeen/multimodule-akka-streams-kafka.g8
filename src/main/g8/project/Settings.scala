@@ -81,7 +81,7 @@ object Settings {
       maintainer in Docker := maintainer.value,
       version in Docker := BaseImageVersion,
       dockerBaseImage := BaseImage,
-      dockerRepository := Some($if(private_registry.truthy)$s"$docker_registry$/\$DockerUser$else$\$DockerUser$endif$"),
+      dockerRepository := Some($if(private_registry.truthy)$s"$docker_registry$/\$DockerUser"$else$DockerUser$endif$),
       dockerAlias := DockerAlias(
         $if(private_registry.truthy)$Some("$docker_registry$")$else$None$endif$,
         Some(DockerUser),
