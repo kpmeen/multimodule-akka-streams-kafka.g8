@@ -19,6 +19,7 @@ object Settings {
     "-language:experimental.macros", // Allow macro definition (besides implementation and application)
     "-language:higherKinds", // Allow higher-kinded types
     "-language:implicitConversions", // Allow definition of implicit functions called views
+    "-language:postfixOps", // Allow postfix syntax like `10 seconds` or `src via flow to sink`
     "-unchecked", // Enable additional warnings where generated code depends on assumptions.
     "-Xfatal-warnings", // Fail the compilation if there are any warnings.
     "-Xfuture", // Turn on future language features.
@@ -71,13 +72,11 @@ object Settings {
   )
 
   // Set to e.g. Some("registry.gitlab.com") for gitlab docker registry
-  $if(use_private_docker_registry)$
-  val DockerRegistryHost: Option[String] = Some("$docker_registry$")
-  $else$
-  val DockerRegistryHost: Option[String] = None
-  $endif$
-  // targetets repo for docker username or organization
-  val DockerUser     = "$docker_user$"
+  val DockerRegistryHost = $if(private_registry.truthy)$Some("$docker_registry$")$else$None$endif$
+  // target repo for docker username or organization
+  val DockerUser = "$docker_user$"
+  // image alias pushed to registry
+  val DockerAlias = DockerRegistryHost.map(_ => s"$project_name$/\$moduleName").getOrElse(moduleName)
 
   val DockerSettings: String => Seq[Def.Setting[_]] = (moduleName: String) =>
     Seq(
@@ -88,11 +87,7 @@ object Settings {
       dockerAlias := DockerAlias(
         DockerRegistryHost,
         Some(DockerUser),
-        $if(use_private_docker_registry)$
-        "$project_name$/" + moduleName,
-        $else$
-        moduleName,
-        $endif$
+        DockerAlias,
         Some("latest")
       )
     )
