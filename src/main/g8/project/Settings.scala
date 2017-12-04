@@ -71,24 +71,22 @@ object Settings {
     sources in (Compile, doc) := Seq.empty
   )
 
-  // Set to e.g. Some("registry.gitlab.com") for gitlab docker registry
-  val DockerRegistryHost = $if(private_registry.truthy)$Some("$docker_registry$")$else$None$endif$
   // target repo for docker username or organization
   val DockerUser = "$docker_user$"
-  // image alias pushed to registry
-  val DockerAlias = $if(private_registry.truthy)$s"$project_name$/\$moduleName"$else$moduleName$endif$
+  val BaseImage = "openjdk:8"
+  val BaseImageVersion = "latest"
 
   val DockerSettings: String => Seq[Def.Setting[_]] = (moduleName: String) =>
     Seq(
       maintainer in Docker := maintainer.value,
-      version in Docker := "latest",
-      dockerBaseImage := "openjdk:8",
-      dockerRepository := Some(s"\${DockerRegistryHost.map(h => s"\$h/").getOrElse("")}\$DockerUser"),
+      version in Docker := BaseImageVersion,
+      dockerBaseImage := BaseImage,
+      dockerRepository := Some($if(private_registry.truthy)$s"$docker_registry$/\$DockerUser$else$\$DockerUser$endif$"),
       dockerAlias := DockerAlias(
-        DockerRegistryHost,
+        $if(private_registry.truthy)$Some("$docker_registry$")$else$None$endif$,
         Some(DockerUser),
-        DockerAlias,
-        Some("latest")
+        $if(private_registry.truthy)$s"$project_name$/\$moduleName"$else$moduleName$endif$,
+        Some(BaseImageVersion)
       )
     )
 
