@@ -71,9 +71,13 @@ object Settings {
   )
 
   // Set to e.g. Some("registry.gitlab.com") for gitlab docker registry
+  $if(private_docker_registry.truthy)$
+  val DockerRegistryHost: Option[String] = Some("$docker_registry_host$")
+  $else$
   val DockerRegistryHost: Option[String] = None
+  $endif$
   // targetets repo for docker username or organization
-  val DockerUser     = "kpmeen"
+  val DockerUser     = "$docker_user$"
 
   val DockerSettings: String => Seq[Def.Setting[_]] = (moduleName: String) =>
     Seq(
@@ -84,7 +88,11 @@ object Settings {
       dockerAlias := DockerAlias(
         DockerRegistryHost,
         Some(DockerUser),
+        $if(private_docker_registry.truthy)$
         "$project_name$/" + moduleName,
+        $else$
+        moduleName,
+        $endif$
         Some("latest")
       )
     )

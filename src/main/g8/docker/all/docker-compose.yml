@@ -1,0 +1,56 @@
+---
+version: '3'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    ports:
+      - 32181:32181
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 32181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    ports:
+      - 29092:29092
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:32181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  $project_name$-producer:
+    $if(private_docker_registry.truthy)$
+    image: $docker_user$/$project_name$-producer
+    $else$
+    image: $docker_registry_host$/$docker_user$/$project_name$/$project_name$-producer
+    $endif$
+    depends_on:
+      - kafka
+    links:
+      - zookeeper
+      - kafka
+    environment:
+      - KAFKA_URL=kafka:29092
+      - KAFKA_TOPIC=$kafka_topic$
+      - TWITTER_CONSUMER_KEY
+      - TWITTER_CONSUMER_SECRET
+      - TWITTER_ACCESS_TOKEN
+      - TWITTER_ACCESS_TOKEN_SECRET
+
+  $project_name$-consumer:
+    $if(private_docker_registry.truthy)$
+        image: $docker_user$/$project_name$-consumer
+        $else$
+        image: $docker_registry_host$/$docker_user$/$project_name$/$project_name$-consumer
+        $endif$
+    depends_on:
+      - kafka
+    links:
+      - zookeeper
+      - kafka
+    environment:
+      KAFKA_URL: kafka:29092
+      KAFKA_TOPIC: $kafka_topic$
