@@ -14,6 +14,3 @@ up `zookeeper` and `kafka`, as well as the consumer and producer services.
 ```
 $ sbt new kpmeen/multimodule-akka-stream-kafka.g8
 ```
-
-## License
-
