@@ -5,5 +5,5 @@ package $package$.schemas;
 message SampleEvent {
     int64 id = 1;
     int64 dateInMillis = 2;
-    string text = 5;
+    string text = 3;
 }
